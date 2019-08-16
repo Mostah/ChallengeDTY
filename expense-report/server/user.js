@@ -39,11 +39,22 @@ var userSchema = mongoose.Schema({
             required: true,
         },
         adress: {
-            number: Number,
-            street: String,
-            zip_code: Number,
-            country: String,
-            required: false,
+            number: {
+                type: Number,
+                required: false,
+            },
+            street: {
+                type: String,
+                required: false,
+            },
+            zip_code: {
+                type: Number,
+                required: false,
+            },
+            country: {
+                type: String,
+                required: false,
+            },
         },
         profile_picture: {
             type: Buffer,
