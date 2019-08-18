@@ -22,7 +22,6 @@ function login(username, password) {
                 user.authdata = window.btoa(username + ':' + password); //
                 localStorage.setItem('user', JSON.stringify(user));
             }
-
             return user;
         });
 }

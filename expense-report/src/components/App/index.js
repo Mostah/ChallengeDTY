@@ -16,6 +16,7 @@ class App extends Component {
     super()
     this.state = {
       isAuthenticated: false,
+      user: { },
       err: '',
     }
     this.updateAuthentification = this.updateAuthentification.bind(this)

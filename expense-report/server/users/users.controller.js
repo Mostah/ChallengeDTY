@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+var mongoose = require('mongoose');
+
 const userService = require('./user.service');
 var User = require('../structure/user');
+
 
 // routes
 router.post('/authenticate', authenticate);
