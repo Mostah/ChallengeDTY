@@ -6,8 +6,8 @@ import { userService } from '../../services/userService'
 class AuthentificationPage extends Component {
     constructor(props) {
         super(props);
-        userService.logout()
-        this.props.updateAuthentification(); //logout before trying to login again
+        userService.logout();
+        props.updateAuthentification(false);
         this.state = {
             username: '',
             password: '',
@@ -42,7 +42,7 @@ class AuthentificationPage extends Component {
                 user => {
                     const { from } = this.props.location.state || { from: { pathname: "/" } }; 
                     this.props.history.push(from);
-                    this.props.updateAuthentification();
+                    this.props.updateAuthentification(true);
                 },
                 error => this.setState({ error, loading: false })
             );

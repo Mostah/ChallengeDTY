@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 import Header from '../Header'
 import Footer from '../Footer'
 import AuthentificationPage from '../AuthentificationPage'
-import Home from '../Home'
+import HomePage from '../HomePage'
 import { PrivateRoute } from '../_components' //component that redirect to login if not connected
 import { authHeader } from '../_helpers'
 
@@ -16,36 +16,39 @@ class App extends Component {
     super()
     this.state = {
       isAuthenticated: false,
-      user: { },
       err: '',
     }
-    this.updateAuthentification = this.updateAuthentification.bind(this)
+
+    this.updateAuthentification = this.updateAuthentification.bind(this);
   }
 
-  updateAuthentification() {
+  componentDidMount() {
     localStorage.getItem('user') ?
-      this.setState({ isAuthenticated: true})
-      : this.setState({ isAuthenticated: false})
+      this.setState({isAuthenticated: true})
+      : this.setState({isAuthenticated: false})
+  }
+
+  updateAuthentification(isAuthenticated) {
+    this.setState({isAuthenticated})
   }
 
   render () {
-    const { isAuthenticated, err } = this.state;
     return (
       <div className="App">
-        <Header isAuthenticated={isAuthenticated}/>
-        <div className="jumbotron">
-          <div className="container">
-            <div className="col-sm-8 col-sm-offset-2">
-              <Router>
-                <div>
-                  <PrivateRoute exact path="/" component={Home} />
-                  <Route path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />}/>
+        <Router>
+          <div>
+            <Header updateAuthentification={this.updateAuthentification}/>
+            <div className="jumbotron">
+              <div className="container">
+                <div className="col-sm-12 col-sm-offset-2">
+                  <PrivateRoute exact path="/" component={HomePage} />
+                  <Route exact path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />}/>
                 </div>
-              </Router>
+              </div>
             </div>
+            <Footer />
           </div>
-        </div>
-        <Footer />
+        </Router>
       </div>
 
 

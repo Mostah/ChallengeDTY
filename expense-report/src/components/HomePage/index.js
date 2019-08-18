@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class Home extends Component {
+class HomePage extends Component {
     constructor(props) {
         super(props);
 
@@ -15,7 +15,7 @@ class Home extends Component {
         return (
             <div className="col-md-6 col-md-offset-3">
                 <h1>Hi {user.description.first_name}!</h1> 
-                <p>You're logged in with React & Basic HTTP Authentication!!</p>
+                <p>You're logged in !!</p>
                 <p>
                     <Link to="/login">Logout</Link>
                 </p>
@@ -24,4 +24,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default HomePage;

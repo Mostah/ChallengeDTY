@@ -2,8 +2,9 @@ import React from 'react';
 import './index.css';
 
 import { Navbar, Nav, Button } from 'react-bootstrap'
+import { BrowserRouter as Router, Link } from 'react-router-dom'
 
-const Header = ({ isAuthenticated }) =>  
+const Header = ({ }) =>  
     <div className="Header">
         <link
             rel="stylesheet"
@@ -11,7 +12,7 @@ const Header = ({ isAuthenticated }) =>
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             crossorigin="anonymous"
         />
-        { isAuthenticated 
+        { localStorage.getItem('user') 
           ? <div className="connected">
               <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="#home">Expense Reports</Navbar.Brand>
@@ -19,9 +20,12 @@ const Header = ({ isAuthenticated }) =>
                     <Nav.Link href="#home">Home</Nav.Link>
                     <Nav.Link href="#reports">Reports</Nav.Link>
                     <Nav.Link href="#team">My Team</Nav.Link>
-                    <Nav.Link href="#users">Users</Nav.Link>
+                    <Nav.Link href="/login">Users</Nav.Link>
                 </Nav>
-                <Button variant="outline-info">My Account</Button>
+                <Link to="/login">
+                  <Button variant="outline-info">Logout</Button>
+                </Link>
+                
               </Navbar>
             </div>
           : <div className="disconnected">
