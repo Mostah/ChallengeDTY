@@ -10,8 +10,8 @@ function Footer () {
                 integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 crossorigin="anonymous"
             />
-            <footer class="page-footer font-small bg-dark">
-                <div class="footer-copyright text-center py-3 fixed-bottom">© 2019 Copyright :
+            <footer className="page-footer font-small bg-dark">
+                <div className="footer-copyright text-center py-3 fixed-bottom">© 2019 Copyright :
                     <a href="https://paris-digital-lab.com/"> Paris Digital Lab</a>
                 </div>
             </footer>

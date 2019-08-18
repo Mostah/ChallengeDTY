@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './index.css';
 
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
 
 import Header from '../Header'
 import Footer from '../Footer'
-import Authentification from '../Authentification'
+import AuthentificationPage from '../AuthentificationPage'
 import Home from '../Home'
+import { PrivateRoute } from '../_components' //component that redirect to login if not connected
+import { authHeader } from '../_helpers'
 
 class App extends Component {
 
@@ -16,6 +18,13 @@ class App extends Component {
       isAuthenticated: false,
       err: '',
     }
+    this.updateAuthentification = this.updateAuthentification.bind(this)
+  }
+
+  updateAuthentification() {
+    localStorage.getItem('user') ?
+      this.setState({ isAuthenticated: true})
+      : this.setState({ isAuthenticated: false})
   }
 
   render () {
@@ -26,12 +35,12 @@ class App extends Component {
         <div className="jumbotron">
           <div className="container">
             <div className="col-sm-8 col-sm-offset-2">
-                <Router>
-                    <div>
-                        <PrivateRoute exact path="/" component={Home} />
-                        <Route path="/login" component={Authentification} />
-                    </div>
-                </Router>
+              <Router>
+                <div>
+                  <PrivateRoute exact path="/" component={Home} />
+                  <Route path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />}/>
+                </div>
+              </Router>
             </div>
           </div>
         </div>
@@ -42,14 +51,5 @@ class App extends Component {
     );
   }
 }
-
-
-const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={props => (
-        localStorage.getItem('user')
-            ? <Component {...props} />
-            : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-    )} />
-)
 
 export default App;

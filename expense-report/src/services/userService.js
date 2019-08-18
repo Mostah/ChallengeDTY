@@ -3,19 +3,7 @@ import { API_URL } from '../constants/index.js';
 export const userService = {
     login,
     logout,
-    getAll
 };
-
-function authHeader() {
-    // return authorization header with basic auth credentials
-    let user = JSON.parse(localStorage.getItem('user'));
-
-    if (user && user.authdata) {
-        return { 'Authorization': 'Basic ' + user.authdata };
-    } else {
-        return {};
-    }
-}
 
 function login(username, password) {
     const requestOptions = {
@@ -31,7 +19,7 @@ function login(username, password) {
             if (user) {
                 // store user details and basic auth credentials in local storage 
                 // to keep user logged in between page refreshes
-                user.authdata = window.btoa(username + ':' + password);
+                user.authdata = window.btoa(username + ':' + password); //
                 localStorage.setItem('user', JSON.stringify(user));
             }
 
@@ -42,15 +30,6 @@ function login(username, password) {
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
-}
-
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${API_URL}/users`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
@@ -70,3 +49,6 @@ function handleResponse(response) {
         return data;
     });
 }
+
+//In the handleResponse method the service checks if the http response from the api is 401 Unauthorized and automatically 
+//logs the user out. This handles if the credentials are incorrect or if the user is no longer valid for any reason.
