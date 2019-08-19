@@ -3,6 +3,10 @@ import { API_URL } from '../constants/index.js';
 export const userService = {
     login,
     logout,
+    createUser,
+    getCategory,
+    getUserId,
+    getUserPseudo,
 };
 
 function login(username, password) {
@@ -19,7 +23,7 @@ function login(username, password) {
             if (user) {
                 // store user details and basic auth credentials in local storage 
                 // to keep user logged in between page refreshes
-                user.authdata = window.btoa(username + ':' + password); //
+                user.authdata = window.btoa(username + ':' + password);
                 localStorage.setItem('user', JSON.stringify(user));
             }
             return user;
@@ -27,8 +31,66 @@ function login(username, password) {
 }
 
 function logout() {
-    // remove user from local storage to log user out
     localStorage.removeItem('user');
+}
+
+function createUser(pseudo, password, first_name, last_name, email, category, manager) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify({ pseudo, password, first_name, last_name, email, category, manager}),
+    }
+// need to add a request to add a member of a team in the db of the manager
+    return fetch(`${API_URL}/users/createUser`, requestedOptions)
+        .then(response => {
+            if (response.ok) {
+                return true
+            }
+            return false
+        })
+}
+
+function getUserPseudo(pseudo) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify({ pseudo }),
+    }
+    
+    return fetch(`${API_URL}/users/getUserPseudo`, requestedOptions)
+        .then(handleResponse)
+        .then(user => user)
+}
+
+function getUserId(_id) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify({ _id }),
+    }
+    return fetch(`${API_URL}/users/getUserId`, requestedOptions)
+        .then(handleResponse)
+        .then(user => user)
+}
+
+function getCategory(category) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify({category})
+    }
+
+    return fetch(`${API_URL}/users/getCategory`, requestedOptions)
+        .then(handleResponse)
+        .then(list_category => list_category)
 }
 
 function handleResponse(response) {
@@ -38,7 +100,6 @@ function handleResponse(response) {
             if (response.status === 401) {
                 // auto logout if 401 response returned from api
                 logout();
-                //location.reload(true);
             }
 
             const error = (data && data.message) || response.statusText;

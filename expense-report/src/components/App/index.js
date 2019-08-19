@@ -7,6 +7,8 @@ import Header from '../Header'
 import Footer from '../Footer'
 import AuthentificationPage from '../AuthentificationPage'
 import HomePage from '../HomePage'
+import CreateUserPage from '../CreateUserPage'
+
 import { PrivateRoute } from '../_components' //component that redirect to login if not connected
 import { authHeader } from '../_helpers'
 
@@ -42,6 +44,7 @@ class App extends Component {
               <div className="container">
                 <div className="col-sm-12 col-sm-offset-2">
                   <PrivateRoute exact path="/" component={HomePage} />
+                  <PrivateRoute exact path="/users/new" component={CreateUserPage}/>
                   <Route exact path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />}/>
                 </div>
               </div>

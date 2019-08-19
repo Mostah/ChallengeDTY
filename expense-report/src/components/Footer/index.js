@@ -11,7 +11,7 @@ function Footer () {
                 crossorigin="anonymous"
             />
             <footer className="page-footer">
-                <div className="text-center py-3 fixed-bottom bg-dark text-white">© 2019 Copyright :
+                <div className="text-center py-3 bg-dark text-white">© 2019 Copyright :
                     <a href="https://paris-digital-lab.com/"> Paris Digital Lab</a>
                 </div>
             </footer>

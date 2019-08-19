@@ -5,10 +5,12 @@ var mongoose = require('mongoose');
 const userService = require('./user.service');
 var User = require('../structure/user');
 
-
 // routes
 router.post('/authenticate', authenticate);
-router.post('/createUser', createUser)
+router.post('/createUser', createUser);
+router.post('/getCategory', getCategory);
+router.post('/getUserId', getUserId);
+router.post('/getUserPseudo', getUserPseudo);
 
 module.exports = router;
 
@@ -18,27 +20,47 @@ function authenticate(req, res, next) {
         .catch(err => next(err));
 }
 
+function getCategory(req, res, next) {
+    userService.getCategory(req.body)
+        .then(list => res.json(list))
+        .catch(err => next(err))
+}
+
+function getUserId(req, res, next){
+    userService.getUserId(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'User not found' }))
+        .catch(err => next(err))
+}
+
+function getUserPseudo(req, res, next) {
+    userService.getUserPseudo(req.body)
+        .then()
+}
+
 function createUser(req, res) {
+    if(req.body.manager) {
+        var managerID = mongoose.Types.ObjectId(req.body.manager);
+    }
     const new_user = new User({
         _id: new mongoose.Types.ObjectId(),
         pseudo: req.body.pseudo,
         password: req.body.password,
         category: req.body.category,
         description: {
-            first_name: req.body.description.first_name,
-            last_name: req.body.description.last_name,
-            birth_date: req.body.description.birth_date,
-            phone_number: req.body.description.phone_number,
-            email: req.body.description.email,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            birth_date: req.body.birth_date,
+            phone_number: req.body.phone_number,
+            email: req.body.email,
             adress: {
-                number: req.body.description.adress.number,
-                street: req.body.description.adress.street,
-                country: req.body.description.adress.country,
-                zip_code: req.body.description.adress.zip_code,
+                number: req.body.number,
+                street: req.body.street,
+                country: req.body.country,
+                zip_code: req.body.zip_code,
             },
-            profile_picture: req.body.description.profile_picture
+            profile_picture: req.body.profile_picture
         },
-        manager: req.body.manager,
+        manager: managerID,
         team: req.body.team,
         reports: req.body.reports,
         date: new Date()

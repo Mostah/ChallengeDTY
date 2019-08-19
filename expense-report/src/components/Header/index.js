@@ -15,12 +15,18 @@ const Header = ({ }) =>
         { localStorage.getItem('user') 
           ? <div className="connected">
               <Navbar bg="dark" variant="dark">
-                <Navbar.Brand href="#home">Expense Reports</Navbar.Brand>
+                <Link to="/">
+                  <Navbar.Brand href="#home">Expense Reports</Navbar.Brand>
+                </Link>
                 <Nav className="mr-auto">
-                    <Nav.Link href="#home">Home</Nav.Link>
+                    <Link to="/">
+                      <Nav.Link href="/">Home</Nav.Link>
+                    </Link>
                     <Nav.Link href="#reports">Reports</Nav.Link>
                     <Nav.Link href="#team">My Team</Nav.Link>
-                    <Nav.Link href="/login">Users</Nav.Link>
+                    <Link to="/users/new">
+                      <Nav.Link href="/users/new">Create Users</Nav.Link>
+                    </Link>
                 </Nav>
                 <Link to="/login">
                   <Button variant="outline-info">Logout</Button>
