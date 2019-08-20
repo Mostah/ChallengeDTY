@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import './index.css';
 
 import { userService } from '../../services/userService'
+import { NONAME } from 'dns';
 
 class CreateUserPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
             pseudo: '',
+            pseudoValid: true,
             password: '',
+            passwordValid: true,
             first_name: '',
             last_name: '',
             email: '',
+            emailValid: true,
             category: '',
             manager: '',
             submitted: false,
@@ -23,6 +27,7 @@ class CreateUserPage extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.validateField = this.validateField.bind(this);
         this.reset = this.reset.bind(this);
     } 
 
@@ -33,37 +38,66 @@ class CreateUserPage extends Component {
     handleChange(e) {
         const { name, value } = e.target;
         this.setState( {[name]: value} );
+
+        //TODO Avoid sending requests at every change, just one if the user stop typing for 1 sec
+        if (name == 'pseudo') {
+            userService.getUserPseudo(value)
+                .then(user => user.length == 0 ? this.setState({ availablePseudo: false }) : this.setState({availablePseudo: true}))
+        }
+        this.validateField(name, value)
+
+    }
+
+    validateField(fieldName, value) {
+        let emailValid = this.state.emailValid;
+        let passwordValid = this.state.passwordValid;
+        switch(fieldName) {
+            case 'email':
+              emailValid = value.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i) != null;
+              break;
+            case 'password':
+              passwordValid = value.length >= 6;
+              break;
+            default:
+              break;
+          }
+        this.setState({ emailValid, passwordValid })
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
         this.setState({ submitted: true});
-        const { pseudo, password, first_name, last_name, email, category, manager} = this.state //to complete
+        const { pseudo, pseudoValid, password, passwordValid, first_name, last_name, email, emailValid, category, manager} = this.state //to complete
 
         // stop here if form is invalid
-        if (!(pseudo && password && first_name && last_name && email && category)) { //to complete
+        if (!(pseudo && password && first_name && last_name && email && category && pseudoValid && emailValid && passwordValid)) { //to complete
             return;
         }       
         this.setState({ loading: true})
         userService.createUser(pseudo, password, first_name, last_name, email, category, manager)
-            .then(value => { 
-                this.setState({ created: value });
-                this.reset();
-                }, 
-                error => this.setState({ error, loading: false})
-            );
-            
+            .then(text => {
+                if(text === "OK") { 
+                    this.setState({ created: true });
+                    this.reset();
+                }
+                else{
+                    this.setState({error: text, loading: false})
+                }
+            });
     }
 
     reset() {
         userService.getCategory('manager').then(list => this.setState({ manager_list: list}));
         this.setState({
             pseudo: '',
+            pseudoValid: true,
             password: '',
+            passwordValid :true,
             first_name: '',
             last_name: '',
             email: '',
+            emailValid: true,
             category: '',
             manager: '',
             submitted: false,
@@ -74,7 +108,7 @@ class CreateUserPage extends Component {
     }
 
     render() {
-        const { pseudo, password, first_name, last_name, email, category, manager, submitted, loading, created, error, manager_list } = this.state;
+        const { pseudo, pseudoValid, password, passwordValid, first_name, last_name, email, emailValid, category, manager, submitted, loading, created, error, manager_list } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">
                 <div className='CreateUserPage'>
@@ -82,37 +116,46 @@ class CreateUserPage extends Component {
                     <form name="form" onSubmit={this.handleSubmit}>
                         <div className={'form-group' + (submitted && !pseudo ? ' has-error' : '')}>
                             <label htmlFor="pseudo">Pseudo</label>
-                            <input type="text" className="form-control" name="pseudo" value={pseudo} onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="pseudo" placeholder="JBridoux" value={pseudo} onChange={this.handleChange} />
                             {submitted && !pseudo &&
-                                <div className="help-block">Pseudo is required</div>
+                                <small className="text-danger">Pseudo is required</small>
+                            }
+                            {submitted && pseudo && pseudoValid &&
+                                <small className="text-danger">Pseudo already taken </small>
                             }
                         </div>
                         <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
                             <label htmlFor="password">Password</label>
-                            <input type="password" className="form-control" name="password" value={password} onChange={this.handleChange} />
+                            <input type="password" className="form-control" name="password" placeholder="**********" value={password} onChange={this.handleChange} />
                             {submitted && !password &&
-                                <div className="help-block">Password is required</div>
+                                <small className="text-danger">Password is required</small>
+                            }
+                            {submitted && password && !passwordValid &&
+                                <small className="text-danger">Invalid password : it length must be > 6</small>
                             }
                         </div>
                         <div className={'form-group' + (submitted && !first_name ? ' has-error' : '')}>
                             <label htmlFor="first_name">First Name</label>
-                            <input type="text" className="form-control" name="first_name" value={first_name} onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="first_name"  placeholder="Justin" value={first_name} onChange={this.handleChange} />
                             {submitted && !first_name &&
-                                <div className="help-block">First Name is required</div>
+                                <small className="text-danger">First Name is required</small>
                             }
                         </div>
                         <div className={'form-group' + (submitted && !last_name ? ' has-error' : '')}>
                             <label htmlFor="last_name">Last Name</label>
-                            <input type="text" className="form-control" name="last_name" value={last_name} onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="last_name" placeholder="Bridoux" value={last_name} onChange={this.handleChange} />
                             {submitted && !last_name &&
-                                <div className="help-block">Last Name is required</div>
+                                <small className="text-danger">Last Name is required</small>
                             }
                         </div>
                         <div className={'form-group' + (submitted && !email ? ' has-error' : '')}>
                             <label htmlFor="email">e-mail</label>
-                            <input type="text" className="form-control" name="email" value={email} onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="email" placeholder="justin.bridoux@email.com" value={email} onChange={this.handleChange} />
                             {submitted && !email &&
-                                <div className="help-block">e-mail is required</div>
+                                <small className="text-danger">e-mail is required</small>
+                            }
+                            {submitted && email && !emailValid &&
+                                <small className="text-danger">Invalid email</small>
                             }
                         </div>
                         <div className={'form-group' + (submitted && !category ? ' has-error' : '')}>
@@ -124,7 +167,7 @@ class CreateUserPage extends Component {
                                 <option value="administrateur">Administrateur</option>
                             </select>
                             {submitted && !category && category != "none" &&
-                                <div className="help-block">Category is required</div>
+                                <small className="text-danger">Category is required</small>
                             }
                         </div>
                         { category === 'employee' ? 
@@ -135,7 +178,7 @@ class CreateUserPage extends Component {
                                     {manager_list.map( item => <option key={item._id} value={item._id}>{item.description.first_name} {item.description.last_name}</option>)}
                                 </select>
                                 {submitted && !manager && manager != "none" &&
-                                    <div className="help-block">Manager is required</div>
+                                    <small className="text-danger">Manager is required</small>
                             }
                             </div>
                             : null
@@ -147,7 +190,7 @@ class CreateUserPage extends Component {
                             }
                         </div>
                         {error &&
-                            <div className={'alert alert-danger'}>{error}</div>
+                            <div className={'alert alert-danger'}>Message from server : {error}</div>
                         }
                         {created && !error && 
                             <div className={'alert alert-success'}>User Succesfully Created</div>

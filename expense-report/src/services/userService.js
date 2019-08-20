@@ -44,12 +44,7 @@ function createUser(pseudo, password, first_name, last_name, email, category, ma
     }
 // need to add a request to add a member of a team in the db of the manager
     return fetch(`${API_URL}/users/createUser`, requestedOptions)
-        .then(response => {
-            if (response.ok) {
-                return true
-            }
-            return false
-        })
+        .then(response => response.statusText)
 }
 
 function getUserPseudo(pseudo) {
@@ -60,7 +55,6 @@ function getUserPseudo(pseudo) {
         headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
         body: JSON.stringify({ pseudo }),
     }
-    
     return fetch(`${API_URL}/users/getUserPseudo`, requestedOptions)
         .then(handleResponse)
         .then(user => user)

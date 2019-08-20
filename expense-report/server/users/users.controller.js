@@ -34,15 +34,17 @@ function getUserId(req, res, next){
 
 function getUserPseudo(req, res, next) {
     userService.getUserPseudo(req.body)
-        .then()
+        .then(user => user ? res.json(user) : res.status(400).json({message: 'User not found' }))
+        .catch(err => next(err))
 }
 
 function createUser(req, res) {
     if(req.body.manager) {
         var managerID = mongoose.Types.ObjectId(req.body.manager);
     }
+    newId = new mongoose.Types.ObjectId()
     const new_user = new User({
-        _id: new mongoose.Types.ObjectId(),
+        _id: newId,
         pseudo: req.body.pseudo,
         password: req.body.password,
         category: req.body.category,
@@ -65,6 +67,15 @@ function createUser(req, res) {
         reports: req.body.reports,
         date: new Date()
     });
+    User.findOne({_id: managerID}).then(
+        user => {
+            user.team.push(newId);
+            user.save(function(err) {
+                if (err) throw err 
+            });
+        });
+    
+
 
     new_user.save(function(err) {
         if (err) throw err;
