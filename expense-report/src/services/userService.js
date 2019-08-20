@@ -1,4 +1,5 @@
 import { API_URL } from '../constants/index.js';
+import { authHeader } from '../components/_helpers'
 
 export const userService = {
     login,
@@ -15,7 +16,6 @@ function login(username, password) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     };
-
     return fetch(`${API_URL}/users/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
@@ -28,6 +28,7 @@ function login(username, password) {
             }
             return user;
         });
+    
 }
 
 function logout() {

@@ -39,10 +39,18 @@ function getUserPseudo(req, res, next) {
 }
 
 function createUser(req, res) {
+    newId = new mongoose.Types.ObjectId()
     if(req.body.manager) {
         var managerID = mongoose.Types.ObjectId(req.body.manager);
+        User.findOne({_id: managerID}).then( //add the employee in the manager's team
+            user => {
+                user.team.push(newId);
+                user.save(function(err) {
+                    if (err) throw err 
+                });
+            });
     }
-    newId = new mongoose.Types.ObjectId()
+    
     const new_user = new User({
         _id: newId,
         pseudo: req.body.pseudo,
@@ -67,15 +75,6 @@ function createUser(req, res) {
         reports: req.body.reports,
         date: new Date()
     });
-    User.findOne({_id: managerID}).then(
-        user => {
-            user.team.push(newId);
-            user.save(function(err) {
-                if (err) throw err 
-            });
-        });
-    
-
 
     new_user.save(function(err) {
         if (err) throw err;

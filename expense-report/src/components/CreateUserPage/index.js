@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import './index.css';
 
 import { userService } from '../../services/userService'
-import { NONAME } from 'dns';
 
 class CreateUserPage extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.timeout = 0;
         this.state = {
             pseudo: '',
             pseudoValid: true,
@@ -40,10 +40,13 @@ class CreateUserPage extends Component {
         this.setState( {[name]: value} );
 
         //TODO Avoid sending requests at every change, just one if the user stop typing for 1 sec
-        if (name == 'pseudo') {
-            userService.getUserPseudo(value)
-                .then(user => user.length == 0 ? this.setState({ availablePseudo: false }) : this.setState({availablePseudo: true}))
-        }
+        if(this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            if (name == 'pseudo') {
+                userService.getUserPseudo(value)
+                    .then(user => user.length == 0 ? this.setState({ pseudoValid: true }) : this.setState({pseudoValid: false}))
+            }
+        }, 700);
         this.validateField(name, value)
 
     }
@@ -120,7 +123,7 @@ class CreateUserPage extends Component {
                             {submitted && !pseudo &&
                                 <small className="text-danger">Pseudo is required</small>
                             }
-                            {submitted && pseudo && pseudoValid &&
+                            {submitted && pseudo && !pseudoValid &&
                                 <small className="text-danger">Pseudo already taken </small>
                             }
                         </div>
