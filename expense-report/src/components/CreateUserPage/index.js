@@ -42,9 +42,9 @@ class CreateUserPage extends Component {
         //TODO Avoid sending requests at every change, just one if the user stop typing for 1 sec
         if(this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
-            if (name == 'pseudo') {
+            if (name === 'pseudo') {
                 userService.getUserPseudo(value)
-                    .then(user => user.length == 0 ? this.setState({ pseudoValid: true }) : this.setState({pseudoValid: false}))
+                    .then(user => user.length === 0 ? this.setState({ pseudoValid: true }) : this.setState({pseudoValid: false}))
             }
         }, 700);
         this.validateField(name, value)
@@ -169,7 +169,7 @@ class CreateUserPage extends Component {
                                 <option value="manager">Manager</option>
                                 <option value="administrateur">Administrateur</option>
                             </select>
-                            {submitted && !category && category != "none" &&
+                            {submitted && !category && category !== "none" &&
                                 <small className="text-danger">Category is required</small>
                             }
                         </div>
@@ -180,7 +180,7 @@ class CreateUserPage extends Component {
                                     <option value="none">- - - - - - -</option>
                                     {manager_list.map( item => <option key={item._id} value={item._id}>{item.description.first_name} {item.description.last_name}</option>)}
                                 </select>
-                                {submitted && !manager && manager != "none" &&
+                                {submitted && !manager && manager !== "none" &&
                                     <small className="text-danger">Manager is required</small>
                             }
                             </div>

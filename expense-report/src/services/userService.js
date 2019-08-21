@@ -1,13 +1,15 @@
 import { API_URL } from '../constants/index.js';
-import { authHeader } from '../components/_helpers'
 
 export const userService = {
     login,
     logout,
     createUser,
+    deleteUser,
     getCategory,
     getUserId,
     getUserPseudo,
+    getAllUsers,
+    updateUser,
 };
 
 function login(username, password) {
@@ -35,6 +37,18 @@ function logout() {
     localStorage.removeItem('user');
 }
 
+function getAllUsers() {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+    }
+    return fetch(`${API_URL}/users/getAll`, requestedOptions)
+        .then(handleResponse)
+        .then(users => users)
+}
+
 function createUser(pseudo, password, first_name, last_name, email, category, manager) {
     let base64 = require('base-64');
     const user = JSON.parse(localStorage.getItem('user'));
@@ -43,8 +57,31 @@ function createUser(pseudo, password, first_name, last_name, email, category, ma
         headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
         body: JSON.stringify({ pseudo, password, first_name, last_name, email, category, manager}),
     }
-// need to add a request to add a member of a team in the db of the manager
     return fetch(`${API_URL}/users/createUser`, requestedOptions)
+        .then(response => response.statusText)
+}
+
+function deleteUser(_id) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify({ _id }),
+    }
+    return fetch(`${API_URL}/users/deleteUser`, requestedOptions)
+        .then(deleteCount => deleteCount)
+}
+
+function updateUser( userJSON ) {
+    let base64 = require('base-64');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestedOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'authorization': 'Basic ' + base64.encode(user.pseudo + ":" + user.password)},
+        body: JSON.stringify(userJSON), 
+    }
+    return fetch(`${API_URL}/users/updateUser`, requestedOptions)
         .then(response => response.statusText)
 }
 

@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import './index.css';
 
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Header from '../Header'
 import Footer from '../Footer'
 import AuthentificationPage from '../AuthentificationPage'
 import HomePage from '../HomePage'
 import CreateUserPage from '../CreateUserPage'
+import AllUsersPage from '../AllUsersPage'
+import ViewUserPage from '../ViewUserPage'
 
 import { PrivateRoute } from '../_components' //component that redirect to login if not connected
-import { authHeader } from '../_helpers'
 
 class App extends Component {
 
@@ -26,26 +27,28 @@ class App extends Component {
 
   componentDidMount() {
     localStorage.getItem('user') ?
-      this.setState({isAuthenticated: true})
-      : this.setState({isAuthenticated: false})
+      this.setState({ isAuthenticated: true })
+      : this.setState({ isAuthenticated: false })
   }
 
   updateAuthentification(isAuthenticated) {
-    this.setState({isAuthenticated})
+    this.setState({ isAuthenticated })
   }
 
-  render () {
+  render() {
     return (
       <div className="App">
         <Router>
           <div>
-            <Header updateAuthentification={this.updateAuthentification}/>
+            <Header updateAuthentification={this.updateAuthentification} />
             <div className="jumbotron">
               <div className="container">
                 <div className="col-sm-12 col-sm-offset-2">
                   <PrivateRoute exact path="/" component={HomePage} />
-                  <PrivateRoute exact path="/users/new" component={CreateUserPage}/>
-                  <Route exact path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />}/>
+                  <PrivateRoute exact path="/users/new" component={CreateUserPage} />
+                  <PrivateRoute exact path="/users/viewAll" component={AllUsersPage} />
+                  <PrivateRoute exact path="/users/view/:_id" component={ViewUserPage} />
+                  <Route exact path="/login" render={(props) => <AuthentificationPage {...props} updateAuthentification={this.updateAuthentification} />} />
                 </div>
               </div>
             </div>

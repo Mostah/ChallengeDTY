@@ -2,15 +2,15 @@ import React from 'react';
 import './index.css';
 
 import { Navbar, Nav, Button } from 'react-bootstrap'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const Header = ({ }) =>  
+const Header = () =>  
     <div className="Header">
         <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
         />
         { localStorage.getItem('user') 
           ? <div className="connected">
@@ -23,9 +23,8 @@ const Header = ({ }) =>
                       <Nav.Link href="/">Home</Nav.Link>
                     </Link>
                     <Nav.Link href="#reports">Reports</Nav.Link>
-                    <Nav.Link href="#team">My Team</Nav.Link>
-                    <Link to="/users/new">
-                      <Nav.Link href="/users/new">Create Users</Nav.Link>
+                    <Link to ="/users/viewAll">
+                      <Nav.Link href="/users/viewAll">Users</Nav.Link>
                     </Link>
                 </Nav>
                 <Link to="/login">
