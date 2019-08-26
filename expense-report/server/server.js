@@ -26,6 +26,7 @@ app.use(basicAuth);
 
 // api routes
 app.use('/api/users', require('./users/users.controller'));
+app.use('/api/reports', require('./reports/reports.controller'));
 
 // global error handler
 app.use(errorHandler);
@@ -35,26 +36,4 @@ app.listen(8000, () => {
 });
 
 //To be move in the right file
-
-var Report = require('./structure/report');
-
-app.route('/api/addReport').post((req, res) => {
-    const new_report = new Report({
-        _id: new mongoose.Types.ObjectId(),
-        title: req.body.title,
-        date: new Date(),
-        amount: req.body.amount,
-        currency: req.body.currency,
-        comment: req.body.comment,
-        author: req.body.author,
-        manager: req.body.manager,
-        document: req.body.document,
-    });
-//NEED TO UPDATE THE AUTHOR AND MANAGER DATABASE TO ADD THE NEW REPORT
-    new_report.save(function(err) {
-        if (err) throw err;
-        console.log('Report succesfully saved by user : ' + req.body.author)
-    });
-    
-    res.send('Report succesfully saved');
-});
+ 

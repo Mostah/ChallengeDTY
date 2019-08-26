@@ -18,23 +18,21 @@ class UserWidget extends Component {
     }
 
     render() {
+        const localUser = JSON.parse(localStorage.getItem('user'));
         const { user, manager } = this.state;
         return (
             <div className="UserWidget">
-                
                 <div className="container">
-                    <div className="float-right">
-                        <div className="buttons">
-                            <Link style={{ textDecoration: 'none', color: 'black' }} to={"/users/view/"+user._id}>
-                                <button type="button" class="btn btn-info" >See</button>
-                            </Link>
-                            <button type="button" class="btn btn-danger" onClick={this.props.onDelete} value={user._id}>X</button>
-                        </div>
-                    </div>
-                    <div className="col-6">
-                        <div className="media">
-                            <img className="pull-left media-object dp img-circle" alt="profile picture" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" style={{ width: '100px', height: '100px' }} />
-                            <div className="media-body">
+                    { localUser.category === "administrateur" ?
+                    <button type="button" class="close" onClick={this.props.onDelete} value={user._id}>&times;</button>
+                    : null
+                    }
+                    <Link style={{ textDecoration: 'none', color: 'black' }} to={"/users/view/" + user._id}>
+                        <div className="row border border-secondary rounded bg-light text-center">
+                            <div className="col-12 col-sm-12 col-md-12 col-lg-4">
+                                <img className="dp rounded-circle" alt="profile" src="https://bootdey.com/img/Content/user_1.jpg" style={{ width: '120px', height: '120px' }} />
+                            </div>
+                            <div className="col-12 col-sm-12 col-md-12 col-lg-8" style={{ marginTop: "8px", marginBottom: "8px" }}>
                                 <h4 className="media-heading">{user.description.first_name} {user.description.last_name}
                                     {user.description.adress ?
                                         <small> {user.description.adress.country} </small>
@@ -52,10 +50,14 @@ class UserWidget extends Component {
                                     <span>Manager : TO BE DEFINED</span>
                                     : null
                                 }
+
                             </div>
                         </div>
-                    </div>
+                        <br />
+                        <br />
+                    </Link>
                 </div>
+
             </div>
         );
     }

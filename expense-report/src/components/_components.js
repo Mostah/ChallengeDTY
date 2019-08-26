@@ -12,10 +12,34 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
     )} />
 );
 
+export const ManagerRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).category !== "employee" //check if there is a user in local storage, if true then render the component, else redirect to login page
+            ? <Component {...props} />
+            : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )} />
+);
+
+export const AdminRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).category === "administrateur" //check if there is a user in local storage, if true then render the component, else redirect to login page
+            ? <Component {...props} />
+            : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )} />
+);
+
+export const EmployeeRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).category === "employee" //check if there is a user in local storage, if true then render the component, else redirect to login page
+            ? <Component {...props} />
+            : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )} />
+);
+
 export const Search = ({onChange, value}) => 
-    <form class="form-inline md-form form-sm active-purple-2 mt-2">
-        <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search" onChange={onChange} value={value}/>
+    <form className="form-inline md-form form-sm active-purple-2 mt-2">
         <FontAwesomeIcon icon={ faSearch } aria-hidden="true" />
+        <input className="form-control form-control-sm mr-0 w-75" style={{border: 0}} type="text" placeholder="Search" aria-label="Search" onChange={onChange} value={value}/>
     </form>
 
 //While it's possible to bypass this check by manually adding an object to local storage 

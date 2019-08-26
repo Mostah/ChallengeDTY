@@ -25,6 +25,10 @@ var reportSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    status: {
+        type: String,
+        required: true
+    },
     author: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
@@ -44,4 +48,4 @@ var reportSchema = mongoose.Schema({
 
 var Report = mongoose.model('report', reportSchema);
 
-module.exports = Report;
+module.exports = Report; 

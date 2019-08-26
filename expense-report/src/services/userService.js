@@ -82,6 +82,7 @@ function updateUser( userJSON ) {
         body: JSON.stringify(userJSON), 
     }
     return fetch(`${API_URL}/users/updateUser`, requestedOptions)
+        .then(handleResponse)
         .then(response => response.statusText)
 }
 
